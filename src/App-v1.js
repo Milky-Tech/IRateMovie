@@ -1,9 +1,4 @@
-import { useEffect, useState } from "react";
-import { NavBar } from "./NavBar";
-import { Logo } from "./Logo";
-import { Search } from "./Search";
-import { BoxContainer } from "./BoxContainer";
-import { MovieDetails } from "./MovieDetails";
+import { useState } from "react";
 
 const tempMovieData = [
   {
@@ -51,78 +46,16 @@ const tempWatchedData = [
     userRating: 9,
   },
 ];
-export const KEY = "7e22acf8";
+
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
 export default function App() {
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState(tempMovieData);
   const [query, setQuery] = useState("");
   const [isOpen1, setIsOpen1] = useState(true);
   const [isOpen2, setIsOpen2] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [watched, setWatched] = useState([]);
-  const [selectedId, setSelectedId] = useState("");
-
-  function handleSelectMovie(id) {
-    setSelectedId((selectedId) => (selectedId === id ? null : id));
-  }
-  function handleCloseMovie() {
-    setSelectedId(null);
-  }
-
-  function handleAddWatched(movie) {
-    setWatched((watched) => [...watched, movie]);
-  }
-  function handleDeleteWatched(id) {
-    setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
-  }
-
-  useEffect(
-    function () {
-      const controller = new AbortController();
-
-      async function fetchMovies() {
-        try {
-          setIsLoading(true);
-          setError("");
-          const res = await fetch(
-            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
-            { signal: controller.signal }
-          );
-
-          if (!res.ok)
-            throw new Error("someting went wrong with fetching movies");
-          const data = await res.json();
-          if (data.Response === "False") throw new Error("Movie not found");
-          setMovies(data.Search);
-          setIsLoading(false);
-          setError("");
-          // console.log(data.Search);
-        } catch (err) {
-          // console.error(err.message);
-          if (err.name !== "AbortError") {
-            setError(err.message);
-          }
-        } finally {
-          setIsLoading(false);
-        }
-      }
-      if (query.length < 3) {
-        setMovies([]);
-        setError("");
-        return;
-      }
-
-      handleCloseMovie();
-      fetchMovies();
-      return function () {
-        controller.abort();
-      };
-    },
-    [query]
-  );
+  const [watched, setWatched] = useState(tempWatchedData);
 
   return (
     <>
@@ -134,35 +67,15 @@ export default function App() {
       <Main>
         <BoxContainer movies={movies}>
           <ToggleShowButton isOpen1={isOpen1} setIsOpen1={setIsOpen1} />
-          {isLoading && <Loader />}
-          {!isLoading && !error ? (
-            isOpen1 && (
-              <MoviesList movies={movies} onSelect={handleSelectMovie} />
-            )
-          ) : (
-            <ErrorMsg error={error} />
-          )}
+          {isOpen1 && <MoviesList movies={movies} />}
         </BoxContainer>
         <BoxContainer>
           <ToggleShowButton isOpen1={isOpen2} setIsOpen1={setIsOpen2} />
           {isOpen2 && (
             <>
-              {selectedId ? (
-                <MovieDetails
-                  selectedId={selectedId}
-                  onCloseMovie={handleCloseMovie}
-                  onAddWatched={handleAddWatched}
-                  watched={watched}
-                />
-              ) : (
-                <>
-                  <Summary watched={watched} />
-                  <WatchedMovieList
-                    watched={watched}
-                    deleteWatched={handleDeleteWatched}
-                  />
-                </>
-              )}
+              {" "}
+              <Summary watched={watched} />{" "}
+              <WatchedMovieList watched={watched} />
             </>
           )}
         </BoxContainer>
@@ -171,11 +84,27 @@ export default function App() {
   );
 }
 
-const ErrorMsg = ({ error }) => {
-  return <p className="error"> {error ? error : " "}</p>;
+const NavBar = ({ children }) => {
+  return <nav className="nav-bar">{children}</nav>;
 };
-export const Loader = () => {
-  return <p className="loader">Just Loading...</p>;
+const Logo = () => {
+  return (
+    <div className="logo">
+      <span role="img">🍿</span>
+      <h1>usePopcorn</h1>
+    </div>
+  );
+};
+const Search = ({ query, setQuery }) => {
+  return (
+    <input
+      className="search"
+      type="text"
+      placeholder="Search movies..."
+      value={query}
+      onChange={(e) => setQuery(e.target.value)}
+    />
+  );
 };
 
 const SearchNumResult = ({ movies }) => {
@@ -186,19 +115,26 @@ const SearchNumResult = ({ movies }) => {
   );
 };
 
-const MoviesList = ({ movies, onSelect }) => {
+//
+// Main
+//
+
+const BoxContainer = ({ movies, children }) => {
+  return <div className="box">{children}</div>;
+};
+const MoviesList = ({ movies }) => {
   return (
-    <ul className="list list-movies">
+    <ul className="list">
       {movies?.map((movie) => (
-        <Movie movie={movie} key={movie.imdbID} onSelect={onSelect} />
+        <Movie movie={movie} key={movie.imdbID} />
       ))}
     </ul>
   );
 };
 
-const Movie = ({ movie, onSelect }) => {
+const Movie = ({ movie }) => {
   return (
-    <li onClick={() => onSelect(movie.imdbID)}>
+    <li>
       <img src={movie.Poster} alt={`${movie.Title} poster`} />
       <h3>{movie.Title}</h3>
       <div>
@@ -250,24 +186,20 @@ const Summary = ({ watched }) => {
   );
 };
 
-const WatchedMovieList = ({ watched, deleteWatched }) => {
+const WatchedMovieList = ({ watched }) => {
   return (
     <ul className="list">
       {watched.map((movie) => (
-        <Watched
-          movie={movie}
-          key={movie.imdbID}
-          deleteWatched={deleteWatched}
-        />
+        <Watched movie={movie} key={movie.imdbID} />
       ))}
     </ul>
   );
 };
-const Watched = ({ movie, deleteWatched }) => {
+const Watched = ({ movie }) => {
   return (
     <li>
-      <img src={movie.poster} alt={`${movie.title} poster`} />
-      <h3>{movie.title}</h3>
+      <img src={movie.Poster} alt={`${movie.Title} poster`} />
+      <h3>{movie.Title}</h3>
       <div>
         <p>
           <span>⭐️</span>
@@ -281,12 +213,6 @@ const Watched = ({ movie, deleteWatched }) => {
           <span>⏳</span>
           <span>{movie.runtime} min</span>
         </p>
-        <button
-          className="btn-delete"
-          onClick={() => deleteWatched(movie.imdbID)}
-        >
-          ❌
-        </button>
       </div>
     </li>
   );
