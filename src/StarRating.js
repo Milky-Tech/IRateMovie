@@ -34,8 +34,8 @@ const StarRating = ({
     setMovieRating(rating);
   };
   return (
-    <div style={containerStyle}>
-      <div style={starContainerStyle} className={className}>
+    <div style={containerStyle} className={className}>
+      <div style={starContainerStyle}>
         {Array.from({ length: maxRating }, (_, i) => (
           <span>
             <Star

@@ -83,52 +83,79 @@ export const MovieDetails = ({
     [title]
   );
   return (
-    <div className="details">
+    <div className="text-center">
       {isLoading ? (
         <Loader />
       ) : (
         <>
-          <header>
-            <button className="btn-back" onClick={onCloseMovie}>
-              &larr;
+          <header className="text-left rounded-lg bg-slate-200 bg-opacity-10 w-full">
+            <button
+              className="float-left bg-gray-100 rounded-2xl px-2 py-1 text-slate-950 absolute z-50"
+              onClick={onCloseMovie}
+            >
+              <strong>&larr;</strong>
             </button>
-            <img src={poster} alt={`Poster of ${movie} movie`} />
-            <div className="details-overview">
-              <h2>{title}</h2>
-              <p>
-                {released} &bull; {runtime}{" "}
-              </p>
-              <p>{genre}</p>
-              <p>
-                <span>⭐</span>
-                {imdbRating} IMDb rating
-              </p>
+            <div className="flex">
+              <img
+                className="h-64"
+                src={poster}
+                alt={`Poster of ${movie} movie`}
+              />
+              <div className="m-auto text-left">
+                <div className="details-overview">
+                  <h2 className="text-2xl font-semibold font-sans py-4">
+                    {title}
+                  </h2>
+                  <p className="py-3">
+                    {released} &bull; {runtime}{" "}
+                  </p>
+                </div>
+
+                <p className="py-3">{genre}</p>
+                <p className="py-3">
+                  <span>⭐</span>
+                  {imdbRating} IMDb rating
+                </p>
+              </div>
             </div>
           </header>
           <section>
-            <div className="rating">
+            <div className="m-auto w-full my-6">
               {!isWatched ? (
-                <>
-                  <StarRating
-                    maxRating={10}
-                    size={24}
-                    setMovieRating={setUserRating}
-                  />
+                <div className="my-2">
+                  <div className="m-auto flex w-5/6 bg-gray-400 bg-opacity-30 py-4 mb-1 rounded-lg">
+                    {" "}
+                    <StarRating
+                      maxRating={10}
+                      size={24}
+                      setMovieRating={setUserRating}
+                      className="m-auto"
+                    />
+                  </div>
                   {userRating > 0 && (
-                    <button className="btn-add" onClick={handleAdd}>
+                    <button
+                      className="w-5/6 rounded-lg bg-blue-700 text-center p-2"
+                      onClick={handleAdd}
+                    >
                       + Add to List
                     </button>
                   )}
-                </>
+                </div>
               ) : (
-                <p>You Have Seen This Movie and Rated it {yourRating}⭐</p>
+                <p className="text-left py-4 w-5/6">
+                  You Have Seen This Movie and Rated it {yourRating}⭐
+                </p>
               )}
             </div>
-            <p>
-              <em>{plot}</em>
-            </p>
-            <p>Staring {actors}</p>
-            <p>Directed by {director}</p>
+            <div className="px-6">
+              <p className="text-justify w-5/6">
+                <em>{plot}</em>
+              </p>
+              <p className="text-left text-sm py-4 w-5/6">Staring {actors}</p>
+              <p className="text-left text-sm py-2 w-5/6">
+                Directed by {director}
+              </p>
+            </div>
           </section>
         </>
       )}

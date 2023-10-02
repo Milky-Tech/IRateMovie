@@ -5,52 +5,52 @@ import { Search } from "./Search";
 import { BoxContainer } from "./BoxContainer";
 import { MovieDetails } from "./MovieDetails";
 
-const tempMovieData = [
-  {
-    imdbID: "tt1375666",
-    Title: "Inception",
-    Year: "2010",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
-  },
-  {
-    imdbID: "tt0133093",
-    Title: "The Matrix",
-    Year: "1999",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg",
-  },
-  {
-    imdbID: "tt6751668",
-    Title: "Parasite",
-    Year: "2019",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BYWZjMjk3ZTItODQ2ZC00NTY5LWE0ZDYtZTI3MjcwN2Q5NTVkXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_SX300.jpg",
-  },
-];
+// const tempMovieData = [
+//   {
+//     imdbID: "tt1375666",
+//     Title: "Inception",
+//     Year: "2010",
+//     Poster:
+//       "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
+//   },
+//   {
+//     imdbID: "tt0133093",
+//     Title: "The Matrix",
+//     Year: "1999",
+//     Poster:
+//       "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg",
+//   },
+//   {
+//     imdbID: "tt6751668",
+//     Title: "Parasite",
+//     Year: "2019",
+//     Poster:
+//       "https://m.media-amazon.com/images/M/MV5BYWZjMjk3ZTItODQ2ZC00NTY5LWE0ZDYtZTI3MjcwN2Q5NTVkXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_SX300.jpg",
+//   },
+// ];
 
-const tempWatchedData = [
-  {
-    imdbID: "tt1375666",
-    Title: "Inception",
-    Year: "2010",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
-    runtime: 148,
-    imdbRating: 8.8,
-    userRating: 10,
-  },
-  {
-    imdbID: "tt0088763",
-    Title: "Back to the Future",
-    Year: "1985",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BZmU0M2Y1OGUtZjIxNi00ZjBkLTg1MjgtOWIyNThiZWIwYjRiXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
-    runtime: 116,
-    imdbRating: 8.5,
-    userRating: 9,
-  },
-];
+// const tempWatchedData = [
+//   {
+//     imdbID: "tt1375666",
+//     Title: "Inception",
+//     Year: "2010",
+//     Poster:
+//       "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
+//     runtime: 148,
+//     imdbRating: 8.8,
+//     userRating: 10,
+//   },
+//   {
+//     imdbID: "tt0088763",
+//     Title: "Back to the Future",
+//     Year: "1985",
+//     Poster:
+//       "https://m.media-amazon.com/images/M/MV5BZmU0M2Y1OGUtZjIxNi00ZjBkLTg1MjgtOWIyNThiZWIwYjRiXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
+//     runtime: 116,
+//     imdbRating: 8.5,
+//     userRating: 9,
+//   },
+// ];
 export const KEY = "7e22acf8";
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
@@ -131,7 +131,7 @@ export default function App() {
         <Search query={query} setQuery={setQuery} />
         <SearchNumResult movies={movies} />
       </NavBar>
-      <Main>
+      <Main movies={movies}>
         <BoxContainer movies={movies}>
           <ToggleShowButton isOpen1={isOpen1} setIsOpen1={setIsOpen1} />
           {isLoading && <Loader />}
@@ -172,23 +172,32 @@ export default function App() {
 }
 
 const ErrorMsg = ({ error }) => {
-  return <p className="error"> {error ? error : " "}</p>;
+  return (
+    <p className="text-center mt-8 m-auto text-2xl font-bold">
+      {" "}
+      {error ? "⛔" + error : " "}
+    </p>
+  );
 };
 export const Loader = () => {
-  return <p className="loader">Just Loading...</p>;
+  return (
+    <p className="text-center m-auto text-2xl font-bold mt-8">
+      Just Loading...
+    </p>
+  );
 };
 
 const SearchNumResult = ({ movies }) => {
   return (
-    <p className="num-results">
-      Found <strong>{movies.length}</strong> results
+    <p className="text-center">
+      Found <strong className="text-green-600">{movies.length}</strong> results
     </p>
   );
 };
 
 const MoviesList = ({ movies, onSelect }) => {
   return (
-    <ul className="list list-movies">
+    <ul className="h-full w-full px-2">
       {movies?.map((movie) => (
         <Movie movie={movie} key={movie.imdbID} onSelect={onSelect} />
       ))}
@@ -198,14 +207,20 @@ const MoviesList = ({ movies, onSelect }) => {
 
 const Movie = ({ movie, onSelect }) => {
   return (
-    <li onClick={() => onSelect(movie.imdbID)}>
-      <img src={movie.Poster} alt={`${movie.Title} poster`} />
-      <h3>{movie.Title}</h3>
-      <div>
-        <p>
-          <span>🗓</span>
-          <span>{movie.Year}</span>
-        </p>
+    <li
+      onClick={() => onSelect(movie.imdbID)}
+      className="text-left mb-4 hover:bg-slate-500 pl-4 py-2 flex align-center m-auto"
+    >
+      <img className="h-32" src={movie.Poster} alt={`${movie.Title} poster`} />
+      <div className="m-auto ml-2">
+        <h3 className="text-xl font-bold">{movie.Title}</h3>
+
+        <div>
+          <p className="text-md">
+            <span>🗓</span>
+            <span>{movie.Year}</span>
+          </p>
+        </div>
       </div>
     </li>
   );
@@ -213,7 +228,10 @@ const Movie = ({ movie, onSelect }) => {
 
 const ToggleShowButton = ({ isOpen1, setIsOpen1 }) => {
   return (
-    <button className="btn-toggle" onClick={() => setIsOpen1((open) => !open)}>
+    <button
+      className="rounded-xl m-auto mr-2 mt-2 px-2 bg-slate-950"
+      onClick={() => setIsOpen1((open) => !open)}
+    >
       {isOpen1 ? "–" : "+"}
     </button>
   );
@@ -225,9 +243,9 @@ const Summary = ({ watched }) => {
   const avgRuntime = average(watched.map((movie) => movie.runtime));
   return (
     <>
-      <div className="summary">
-        <h2>Movies you watched</h2>
-        <div>
+      <div className="text-left rounded-lg px-8 bg-slate-500 bg-opacity-10 border border-b-2 border-0 w-full pb-4">
+        <h2 className="font-semibold text-xl">Movies you watched</h2>
+        <div className="flex text-left justify-between">
           <p>
             <span>#️⃣</span>
             <span>{watched.length} movies</span>
@@ -252,7 +270,7 @@ const Summary = ({ watched }) => {
 
 const WatchedMovieList = ({ watched, deleteWatched }) => {
   return (
-    <ul className="list">
+    <ul className="p-2">
       {watched.map((movie) => (
         <Watched
           movie={movie}
@@ -265,32 +283,53 @@ const WatchedMovieList = ({ watched, deleteWatched }) => {
 };
 const Watched = ({ movie, deleteWatched }) => {
   return (
-    <li>
-      <img src={movie.poster} alt={`${movie.title} poster`} />
-      <h3>{movie.title}</h3>
-      <div>
-        <p>
-          <span>⭐️</span>
-          <span>{movie.imdbRating}</span>
-        </p>
-        <p>
-          <span>🌟</span>
-          <span>{movie.userRating}</span>
-        </p>
-        <p>
-          <span>⏳</span>
-          <span>{movie.runtime} min</span>
-        </p>
-        <button
-          className="btn-delete"
-          onClick={() => deleteWatched(movie.imdbID)}
-        >
-          ❌
-        </button>
+    <li className="text-center flex">
+      <img className="h-40" src={movie.poster} alt={`${movie.title} poster`} />
+      <div className="m-auto text-center align-center">
+        <h3 className="text-lg font-semibold ">{movie.title}</h3>
+        <div className="flex ">
+          <p>
+            <span>⭐️</span>
+            <span>{movie.imdbRating}</span>
+          </p>
+          <p>
+            <span>🌟</span>
+            <span>{movie.userRating}</span>
+          </p>
+          <p>
+            <span>⏳</span>
+            <span>{movie.runtime} min</span>
+          </p>
+        </div>
       </div>
+      <button
+        className="btn-delete"
+        onClick={() => deleteWatched(movie.imdbID)}
+      >
+        ❌
+      </button>
     </li>
   );
 };
-const Main = ({ children }) => {
-  return <main className="main">{children}</main>;
+const Main = ({ children, movies }) => {
+  return (
+    <main
+      className="w-full block pt-8 md:justify-around bg-slate-950 text-white"
+      style={{ minHeight: "100vh" }}
+    >
+      {movies.length > 0 && (
+        <div className="text-center m-auto font-semibold text-xl">
+          Select Movie, Rate and Add to your WatchList
+        </div>
+      )}
+      <div
+        className="w-full block md:flex pt-4 md:justify-around bg-slate-950 text-white"
+        style={{ minHeight: "100vh" }}
+      >
+        <div className="m-auto flex w-5/6">
+          <div className="md:flex m-auto my-4 md:my-0 w-full">{children}</div>
+        </div>
+      </div>
+    </main>
+  );
 };
